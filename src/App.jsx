@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import WeatherWidget from './components/WeatherWidget';
 import PlantList from './components/PlantList';
 import AddPlantModal from './components/AddPlantModal';
+import Dashboard from './components/Dashboard';
 
 function App() {
   const [plants, setPlants] = useState(() => {
@@ -13,6 +14,7 @@ function App() {
   const [weatherLoading, setWeatherLoading] = useState(true);
   const [weatherError, setWeatherError] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState('dashboard');
 
   useEffect(() => {
     localStorage.setItem('plants', JSON.stringify(plants));
@@ -143,13 +145,36 @@ function App() {
           onRetry={fetchWeather} 
         />
 
-        <PlantList 
-          plants={plants} 
-          weather={weather}
-          onDelete={handleDeletePlant}
-          onWater={handleWaterPlant}
-          onWaterAll={handleWaterAll}
-        />
+        <div className="tab-navigation glass-panel">
+          <button 
+            className={`tab-btn ${activeTab === 'dashboard' ? 'active' : ''}`}
+            onClick={() => setActiveTab('dashboard')}
+          >
+            Dashboard
+          </button>
+          <button 
+            className={`tab-btn ${activeTab === 'plants' ? 'active' : ''}`}
+            onClick={() => setActiveTab('plants')}
+          >
+            My Plants
+          </button>
+        </div>
+
+        {activeTab === 'dashboard' ? (
+          <Dashboard 
+            plants={plants} 
+            weather={weather}
+            onWater={handleWaterPlant} 
+          />
+        ) : (
+          <PlantList 
+            plants={plants} 
+            weather={weather}
+            onDelete={handleDeletePlant}
+            onWater={handleWaterPlant}
+            onWaterAll={handleWaterAll}
+          />
+        )}
 
         <button 
           className="fab" 
